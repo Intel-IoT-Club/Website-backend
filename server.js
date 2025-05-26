@@ -37,6 +37,28 @@ app.post('/api/events', async (req, res) => {
   res.status(201).json({ message: 'Event added successfully' });
 });
 
+// Edit Event
+app.put('/api/events/:id', async (req, res) => {
+  try {
+    const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedEvent) return res.status(404).json({ message: 'Event not found' });
+    res.json({ message: 'Event updated successfully', event: updatedEvent });
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating event', error: err });
+  }
+});
+
+// Delete Event
+app.delete('/api/events/:id', async (req, res) => {
+  try {
+    const deletedEvent = await Event.findByIdAndDelete(req.params.id);
+    if (!deletedEvent) return res.status(404).json({ message: 'Event not found' });
+    res.json({ message: 'Event deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting event', error: err });
+  }
+});
+
 // Projects
 app.get('/api/projects', async (req, res) => {
   const projects = await Project.find();
@@ -49,6 +71,28 @@ app.post('/api/projects', async (req, res) => {
   res.status(201).json({ message: 'Project added successfully' });
 });
 
+// Edit Project
+app.put('/api/projects/:id', async (req, res) => {
+  try {
+    const updatedProject = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedProject) return res.status(404).json({ message: 'Project not found' });
+    res.json({ message: 'Project updated successfully', project: updatedProject });
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating project', error: err });
+  }
+});
+
+// Delete Project
+app.delete('/api/projects/:id', async (req, res) => {
+  try {
+    const deletedProject = await Project.findByIdAndDelete(req.params.id);
+    if (!deletedProject) return res.status(404).json({ message: 'Project not found' });
+    res.json({ message: 'Project deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting project', error: err });
+  }
+});
+
 // Members
 app.get('/api/members', async (req, res) => {
   const members = await Member.find();
@@ -59,6 +103,28 @@ app.post('/api/members', async (req, res) => {
   const newMember = new Member(req.body);
   await newMember.save();
   res.status(201).json({ message: 'Member added successfully' });
+});
+
+// Edit Member
+app.put('/api/members/:id', async (req, res) => {
+  try {
+    const updatedMember = await Member.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedMember) return res.status(404).json({ message: 'Member not found' });
+    res.json({ message: 'Member updated successfully', member: updatedMember });
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating member', error: err });
+  }
+});
+
+// Delete Member
+app.delete('/api/members/:id', async (req, res) => {
+  try {
+    const deletedMember = await Member.findByIdAndDelete(req.params.id);
+    if (!deletedMember) return res.status(404).json({ message: 'Member not found' });
+    res.json({ message: 'Member deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting member', error: err });
+  }
 });
 
 // Start server
