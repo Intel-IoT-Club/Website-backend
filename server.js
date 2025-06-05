@@ -2,11 +2,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 
 // Import Models
 const Event = require('./models/Event');
 const Project = require('./models/Project');
 const Member = require('./models/Member');
+const Admin = require('./models/Admin');
+
+const token_key = "your_secret_key"; // To be added in .env file on Production , can also be changed before adding to .env file as per choice
+
 
 const app = express();
 const PORT = 5000;
@@ -26,19 +31,19 @@ mongoose.connect('mongodb+srv://inteliot:inteliot@backend.ipiryxk.mongodb.net/in
 /* ROUTES */
 
 // Events
-app.get('/api/events', async (req, res) => {
+app.get('/api/events', authenticateToken ,async (req, res) => {
   const events = await Event.find();
   res.json(events);
 });
 
-app.post('/api/events', async (req, res) => {
+app.post('/api/events', authenticateToken ,async (req, res) => {
   const newEvent = new Event(req.body);
   await newEvent.save();
   res.status(201).json({ message: 'Event added successfully' });
 });
 
 // Edit Event
-app.put('/api/events/:id', async (req, res) => {
+app.put('/api/events/:id', authenticateToken ,async (req, res) => {
   try {
     const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedEvent) return res.status(404).json({ message: 'Event not found' });
@@ -60,19 +65,19 @@ app.delete('/api/events/:id', async (req, res) => {
 });
 
 // Projects
-app.get('/api/projects', async (req, res) => {
+app.get('/api/projects', authenticateToken ,async (req, res) => {
   const projects = await Project.find();
   res.json(projects);
 });
 
-app.post('/api/projects', async (req, res) => {
+app.post('/api/projects', authenticateToken ,async (req, res) => {
   const newProject = new Project(req.body);
   await newProject.save();
   res.status(201).json({ message: 'Project added successfully' });
 });
 
 // Edit Project
-app.put('/api/projects/:id', async (req, res) => {
+app.put('/api/projects/:id', authenticateToken ,async (req, res) => {
   try {
     const updatedProject = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedProject) return res.status(404).json({ message: 'Project not found' });
@@ -83,7 +88,7 @@ app.put('/api/projects/:id', async (req, res) => {
 });
 
 // Delete Project
-app.delete('/api/projects/:id', async (req, res) => {
+app.delete('/api/projects/:id', authenticateToken ,async (req, res) => {
   try {
     const deletedProject = await Project.findByIdAndDelete(req.params.id);
     if (!deletedProject) return res.status(404).json({ message: 'Project not found' });
@@ -99,7 +104,7 @@ app.get('/api/members', async (req, res) => {
   res.json(members);
 });
 
-app.post('/api/members', async (req, res) => {
+app.post('/api/members', authenticateToken ,async (req, res) => {
   const newMember = new Member(req.body);
   await newMember.save();
   res.status(201).json({ message: 'Member added successfully' });
@@ -117,7 +122,7 @@ app.put('/api/members/:id', async (req, res) => {
 });
 
 // Delete Member
-app.delete('/api/members/:id', async (req, res) => {
+app.delete('/api/members/:id', authenticateToken ,async (req, res) => {
   try {
     const deletedMember = await Member.findByIdAndDelete(req.params.id);
     if (!deletedMember) return res.status(404).json({ message: 'Member not found' });
@@ -126,6 +131,48 @@ app.delete('/api/members/:id', async (req, res) => {
     res.status(500).json({ message: 'Error deleting member', error: err });
   }
 });
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; 
+
+  if (!token) return res.sendStatus(401); 
+  if (err.name === 'TokenExpiredError') {
+  return res.status(401).json({ message: 'Log-In Expired !' }); // This Can be remove on production and uncommenting the below line
+  //return res.redirect('/') -- Uncomment on Production and add the home page url 
+}
+
+  jwt.verify(token, token_key, (err, user) => {
+    if (err) return res.sendStatus(403); 
+
+    req.user = user; 
+    next();
+  });
+}
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  console.log("Username" , username);
+  try {
+    const user = await Admin.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: "Username does not exist" });
+    }
+
+    if (user.password === password) {
+      const token = jwt.sign({ u: username }, token_key, { expiresIn: '1h' });
+      return res.status(200).json({ message: "Login successful", token });
+    } else {
+      return res.status(401).json({ message: "Wrong password" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error in login" });
+  }
+});
+
+
 
 // Start server
 app.listen(PORT, () => {
