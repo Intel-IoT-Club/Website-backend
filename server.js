@@ -7,7 +7,8 @@ const bodyParser = require('body-parser');
 const Event = require('./models/Event');
 const Project = require('./models/Project');
 const Member = require('./models/Member');
-
+const Timeline_events = require('./models/Timeline_Events');
+  
 const app = express();
 const PORT = 5000;
 
@@ -124,6 +125,55 @@ app.delete('/api/members/:id', async (req, res) => {
     res.json({ message: 'Member deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Error deleting member', error: err });
+  }
+});
+
+app.post("/timeline/add", async (req, res) => {
+  try {
+    const newEvent = new Timeline_events(req.body);
+    await newEvent.save();
+    res.status(201).json({ message: 'Event added' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error adding timeline event', error: err.message });
+  }
+});
+
+app.get("/timeline_events/get", async (req, res) => {
+  try {
+    const events = await Timeline_events.find().sort({ date: 1 }); // sorted by date ascending
+    res.json(events);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching timeline events', error: err.message });
+  }
+});
+
+app.patch('/timeline/update/:id', async (req, res) => {
+  try {
+    const updatedEvent = await Timeline_events.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },  // only update fields sent in request
+      { new: true }        // return the updated document
+    );
+
+    if (!updatedEvent) {
+      return res.status(404).json({ message: 'Timeline event not found' });
+    }
+
+    res.json({ message: 'Timeline event updated successfully', event: updatedEvent });
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating timeline event', error: err.message });
+  }
+});
+
+app.delete('/timeline/delete/:id', async (req, res) => {
+  try {
+    const deletedEvent = await Timeline_events.findByIdAndDelete(req.params.id);
+    if (!deletedEvent) {
+      return res.status(404).json({ message: 'Timeline event not found' });
+    }
+    res.json({ message: 'Timeline event deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting timeline event', error: err.message });
   }
 });
 
