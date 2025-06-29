@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const timeline_events_schema = new mongoose.Schema({
     title : String ,
@@ -8,4 +8,6 @@ const timeline_events_schema = new mongoose.Schema({
     isFirst : Boolean
 });
 
-module.exports = mongoose.model('Timeline_events',timeline_events_schema);
+const Timeline_events = mongoose.model('Timeline_events',timeline_events_schema);
+
+export default Timeline_events;
