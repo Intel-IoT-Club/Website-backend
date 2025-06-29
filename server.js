@@ -128,7 +128,7 @@ app.delete('/api/members/:id', async (req, res) => {
   }
 });
 
-app.post("/timeline/add", async (req, res) => {
+app.post("/api/timeline/add", async (req, res) => {
   try {
     const newEvent = new Timeline_events(req.body);
     await newEvent.save();
@@ -138,7 +138,7 @@ app.post("/timeline/add", async (req, res) => {
   }
 });
 
-app.get("/timeline_events/get", async (req, res) => {
+app.get("/api/timeline_events/get", async (req, res) => {
   try {
     const events = await Timeline_events.find().sort({ date: 1 }); // sorted by date ascending
     res.json(events);
@@ -147,7 +147,7 @@ app.get("/timeline_events/get", async (req, res) => {
   }
 });
 
-app.patch('/timeline/update/:id', async (req, res) => {
+app.patch('/api/timeline/update/:id', async (req, res) => {
   try {
     const updatedEvent = await Timeline_events.findByIdAndUpdate(
       req.params.id,
@@ -165,7 +165,7 @@ app.patch('/timeline/update/:id', async (req, res) => {
   }
 });
 
-app.delete('/timeline/delete/:id', async (req, res) => {
+app.delete('/api/timeline/delete/:id', async (req, res) => {
   try {
     const deletedEvent = await Timeline_events.findByIdAndDelete(req.params.id);
     if (!deletedEvent) {
