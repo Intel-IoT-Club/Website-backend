@@ -36,9 +36,9 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/members', membersRoutes);
 
 // Timeline Events
-app.use('/timeline', timelineRoutes);
+app.use('/api/timeline', timelineRoutes);
 
-app.get("/timeline_events/get", async (req, res) => {
+app.get("/api/timeline_events/get", async (req, res) => {
   try {
     const events = await Timeline_events.find().sort({ date: 1 }); // sorted by date ascending
     res.json(events);
