@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import rateLimit from 'express-rate-limit';
-import morgan from 'morgan';
+
 
 // Import Models
 import Timeline_events from './models/Timeline_Events.js';
@@ -21,8 +21,6 @@ const PORT = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Logging middleware
-app.use(morgan('combined')); //from morgan package
 
 // Rate limiting 
 const limiter = rateLimit({   //from express-rate-limit package
