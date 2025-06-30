@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const memberSchema = new mongoose.Schema({
   name: String,
@@ -10,4 +10,6 @@ const memberSchema = new mongoose.Schema({
   email: String
 });
 
-module.exports = mongoose.model('Member', memberSchema);
+const Member = mongoose.model('Member', memberSchema);
+
+export default Member;
