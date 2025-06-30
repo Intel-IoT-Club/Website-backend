@@ -2,6 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import rateLimit from 'express-rate-limit';
+import morgan from 'morgan';
 
 // Import Models
 import Timeline_events from './models/Timeline_Events.js';
@@ -18,6 +20,18 @@ const PORT = 5000;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// Logging middleware
+app.use(morgan('combined')); //from morgan package
+
+// Rate limiting 
+const limiter = rateLimit({   //from express-rate-limit package
+  windowMs: 15 * 60 * 1000, // 15 minutes time window has been set
+  max: 50, // limiting each IP to 50 rquests per windowMs
+  standardHeaders: true, 
+  legacyHeaders: false, 
+});
+app.use(limiter);
 
 // MongoDB Connection
 mongoose.connect('mongodb+srv://inteliot:inteliot@backend.ipiryxk.mongodb.net/intel-iot-club')
