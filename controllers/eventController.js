@@ -6,7 +6,7 @@ export const getEvent = async (req, res) => {
         const events = await Event.find();
         if(!events || events.length === 0) {
           return res.status(404).json({ message: 'No events found' });}
-        res.status(201).json(events);
+        res.status(200).json(events);
       } catch (error) {
         res.status(500).json({ message: 'Error fetching events', error: error.message });
       }

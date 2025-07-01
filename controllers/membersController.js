@@ -2,18 +2,28 @@ import Member from "../models/Member.js"
 
 //Get all members
 export const getMember = async (req, res) => {
-    const members = await Member.find();
-    if(!members || members.length === 0) {
-      return res.status(404).json({ message: 'No members found' })};
-    res.status(201).json(members);
+  try {
+      const members = await Member.find();
+      if(!members || members.length === 0) {
+          return res.status(404).json({ message: 'No members found' });
+      }
+      res.status(200).json(members);
+  } catch (err) {
+      res.status(500).json({ message: 'Error fetching members', error: err.message });
+  }
 }
 
 // Add a new member
 export const addMember = async (req, res) => {
-    const newMember = new Member(req.body);
-    await newMember.save();
-    res.status(201).json({ message: 'Member added successfully' });
+  try {
+      const newMember = new Member(req.body);
+      await newMember.save();
+      res.status(201).json({ message: 'Member added successfully' });
+  } catch (err) {
+      res.status(500).json({ message: 'Error adding member', error: err.message });
+  }
 }
+
 
 // Edit a member
 export const editMember = async (req, res) => {
