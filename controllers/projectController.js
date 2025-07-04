@@ -2,16 +2,25 @@ import Project from "../models/Project.js";
 
 // Get all projects
 export const getProject = async (req, res) => {
-    const projects = await Project.find();
-    res.json(projects);
+    try {
+        const projects = await Project.find();
+        res.status(200).json(projects);
+    } catch (err) {
+        res.status(500).json({ message: 'Error fetching projects', error: err.message });
+    }
 };
 
 // Add a new project
 export const addProject = async (req, res) => {
-    const newProject = new Project(req.body);
-    await newProject.save();
-    res.status(201).json({ message: 'Project added successfully' });
+    try {
+        const newProject = new Project(req.body);
+        await newProject.save();
+        res.status(201).json({ message: 'Project added successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error adding project', error: err.message });
+    }
 };
+
 
 //Edit a Project
 export const editProject = async (req, res) => {
