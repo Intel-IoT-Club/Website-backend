@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { getEvent, addEvent, editEvent, deleteEvent } from '../controllers/eventController.js';
+import { getEvent, addEvent, editEvent, deleteEvent,searchEvents} from '../controllers/eventController.js';
 
 const router = express.Router();
 
@@ -11,5 +11,8 @@ router.post('/', addEvent);
 router.put('/:id', editEvent);
 
 router.delete('/:id', deleteEvent);
+
+router.get('/search', searchEvents);
+
 
 export default router;
