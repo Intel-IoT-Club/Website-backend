@@ -48,3 +48,26 @@ export const deleteEvent = async (req, res) => {
         res.status(500).json({ message: 'Error deleting event', error: err });
       }
 };
+
+
+export const searchEvents = async (req, res) => {
+  try {
+    const { title } = req.query;
+
+    if (!title || title.trim() === "") {
+      return res.status(400).json({ message: 'Title query parameter is required' });
+    }
+
+    const events = await Event.find({
+      title: { $regex: title, $options: 'i' }  // case-insensitive search
+    });
+
+    if (events.length === 0) {
+      return res.status(404).json({ message: 'No events found matching the title' });
+    }
+
+    res.status(200).json(events);
+  } catch (err) {
+    res.status(500).json({ message: 'Error searching events', error: err.message });
+  }
+};
