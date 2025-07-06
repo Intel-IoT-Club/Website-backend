@@ -48,3 +48,23 @@ export const deleteEvent = async (req, res) => {
         res.status(500).json({ message: 'Error deleting event', error: err });
       }
 };
+
+export const getPaginatedEvents = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+    const skip = (page - 1) * limit;
+
+    const events = await Event.find().skip(skip).limit(limit);
+    const total = await Event.countDocuments();
+
+    res.json({
+      page,
+      totalPages: Math.ceil(total / limit),
+      totalEvents: total,
+      events
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching paginated events', error: err.message });
+  }
+};
