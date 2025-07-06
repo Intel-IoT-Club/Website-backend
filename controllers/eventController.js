@@ -3,7 +3,7 @@ import Event from '../models/Event.js';
 // Get all events
 export const getEvent = async (req, res) => {
     try {
-        const events = await Event.find();
+        const events = await Event.find().sort({ date: -1 }); // ← sort by date DESCENDING
         if(!events || events.length === 0) {
           return res.status(404).json({ message: 'No events found' });}
         res.status(200).json(events);
