@@ -59,8 +59,8 @@ export const searchEvents = async (req, res) => {
     }
 
     const events = await Event.find({
-      title: { $regex: title, $options: 'i' }  // case-insensitive search
-    });
+      name: { $regex: title, $options: 'i' }  // case-insensitive search
+    }).sort({date:-1});
 
     if (events.length === 0) {
       return res.status(404).json({ message: 'No events found matching the title' });
