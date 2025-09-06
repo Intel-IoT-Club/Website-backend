@@ -13,7 +13,7 @@ import membersRoutes from './routes/membersRoutes.js';
 import timelineRoutes from './routes/timelineRoutes.js';
   
 const app = express();
-const PORT = 5000;
+const PORT = 5001;
 
 // Middleware
 app.use(cors());
@@ -38,17 +38,13 @@ app.use('/api/members', membersRoutes);
 // Timeline Events
 app.use('/api/timeline', timelineRoutes);
 
-app.get("/api/timeline_events/get", async (req, res) => {
-  try {
-    const events = await Timeline_events.find().sort({ date: 1 }); // sorted by date ascending
-    res.json(events);
-  } catch (err) {
-    res.status(500).json({ message: 'Error fetching timeline events', error: err.message });
-  }
-});
+
+
+
+
 
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  console.log(`🚀 Server is running on http://localhost:5001`);
 });
