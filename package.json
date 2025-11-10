@@ -1,15 +1,34 @@
 {
   "name": "website-backend",
   "version": "1.0.0",
+  "description": "Backend for Intel IoT Club website - built with Express and MongoDB",
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "cross-env NODE_ENV=development nodemon server.js"
   },
+  "keywords": [
+    "express",
+    "mongodb",
+    "intel-iot-club",
+    "backend",
+    "nodejs"
+  ],
+  "author": "Intel IoT Club Development Team",
+  "license": "MIT",
   "dependencies": {
-    "body-parser": "^2.2.0",
+    "body-parser": "^1.20.3",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "mongoose": "^8.15.0"
+    "mongoose": "^8.9.0"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "nodemon": "^3.1.10"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
